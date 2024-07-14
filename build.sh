@@ -2,7 +2,6 @@
 #
 
 SECONDS=0 # builtin bash timer
-TC_DIR="$HOME/tc/clang-r450784d"
 AK3_DIR="$HOME/AnyKernel3"
 DEFCONFIG="lisa_defconfig"
 
@@ -12,7 +11,7 @@ ZIPNAME="Quickscrap-lisa_$(date '+%Y%m%d-%H%M').zip"
 KDIR=$(pwd)
 DATE=$(date +%d-%h-%Y-%R:%S | sed "s/:/./g")
 START=$(date +"%s")
-TCDIR=$(pwd)/toolchains/clang
+TCDIR=$(pwd)/proton-clang
 IMAGE=$(pwd)/out/arch/arm64/boot/Image
 
 # Naming Variables
@@ -24,13 +23,13 @@ export KVERSION="${KNAME}-${VERSION}-${CODENAME}-$(echo ${MIN_HEAD:0:8})"
 
 # GitHub Variables
 export COMMIT_HASH=$(git rev-parse --short HEAD)
-export REPO_URL="https://github.com/isaiahplayground/ksu_kernel_xiaomi_lisa"
+export REPO_URL="https://github.com/likkai/ksu_kernel_xiaomi_lisa"
 
 # Build Information
 LINKER=ld.lld
 export COMPILER_NAME="$(${TCDIR}/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
 export LINKER_NAME="$("${TCDIR}"/bin/${LINKER} --version | head -n 1 | sed 's/(compatible with [^)]*)//' | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
-export KBUILD_BUILD_USER=isaiahscape
+export KBUILD_BUILD_USER=likkai
 export KBUILD_BUILD_HOST=runner
 export DEVICE="Xiaomi 11 Lite 5G NE"
 export CODENAME="lisa"
@@ -43,9 +42,9 @@ if test -z "$(git rev-parse --show-cdup 2>/dev/null)" &&
 fi
 
 MAKE_PARAMS="O=out ARCH=arm64 CC=clang CLANG_TRIPLE=aarch64-linux-gnu- LLVM=1 LLVM_IAS=1 \
-	CROSS_COMPILE=$TC_DIR/bin/llvm-"
+	CROSS_COMPILE=$TCDIR/bin/llvm-"
 
-export PATH="$TC_DIR/bin:$PATH"
+export PATH="$TCDIR/bin:$PATH"
 
 if [[ $1 = "-r" || $1 = "--regen" ]]; then
 	make $MAKE_PARAMS $DEFCONFIG savedefconfig
