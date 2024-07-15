@@ -41,8 +41,7 @@ if test -z "$(git rev-parse --show-cdup 2>/dev/null)" &&
 	ZIPNAME="${ZIPNAME::-4}-$(echo $head | cut -c1-8).zip"
 fi
 
-MAKE_PARAMS="O=out ARCH=arm64 CC=clang CLANG_TRIPLE=aarch64-linux-gnu- LLVM=1 LLVM_IAS=1 \
-	CROSS_COMPILE=$TCDIR/bin/llvm-"
+MAKE_PARAMS="O=out ARCH=arm64 CC=clang CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip CLANG_TRIPLE=aarch64-linux-gnu- LLVM=1 LLVM_IAS=1"
 
 export PATH="$TCDIR/bin:$PATH"
 
@@ -62,7 +61,7 @@ mkdir -p out
 make $MAKE_PARAMS $DEFCONFIG
 
 echo -e "\nStarting compilation...\n"
-make -j$(nproc --all) $MAKE_PARAMS || exit $?
+make -j$(nproc --all) $MAKE_PARAMS Image || exit $?
 make -j$(nproc --all) $MAKE_PARAMS INSTALL_MOD_PATH=modules INSTALL_MOD_STRIP=1 modules_install
 
 kernel="out/arch/arm64/boot/Image"
