@@ -32,8 +32,8 @@ jobs:
         rm -rf KernelSU/
         cp -pf $GITHUB_WORKSPACE/ksupatch.sh ksupatch.sh
         chmod +x ksupatch.sh
-        ./ksupatch.sh
-        curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s v0.9.5
+        #./ksupatch.sh
+        #curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s v0.9.5
 
     - name: Compiling Kernel
       run: |
