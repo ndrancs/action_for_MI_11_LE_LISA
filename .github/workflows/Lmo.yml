@@ -1,11 +1,11 @@
-name: Build Lisa Kernel With KSU-0.9.5 LMO
+name: Build Lisa Kernel With KSU-0.9.5 LXC
 on:
 
   workflow_dispatch:
 
 jobs:
   build:
-    name: Build Kernel LMO
+    name: Build Kernel LMO KSU LXC
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -30,11 +30,27 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE/kernel_workspace/android_kernel_xiaomi_sm8350
         rm -rf KernelSU/
-        #curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s v0.9.5
+        cp -pf $GITHUB_WORKSPACE/ksupatch.sh ksupatch.sh
+        chmod +x ksupatch.sh
+        ./ksupatch.sh
+        curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s v0.9.5
 
     - name: Compiling Kernel
       run: |
         cd $GITHUB_WORKSPACE/kernel_workspace/android_kernel_xiaomi_sm8350
+        mkdir utils
+        cp -pf $GITHUB_WORKSPACE/utils/* ./utils/
+        echo 'source "utils/Kconfig"' >> "Kconfig"
+        chmod +x $GITHUB_WORKSPACE/kernel_workspace/android_kernel_xiaomi_sm8350/utils/runcpatch.sh
+        if [ -f $GITHUB_WORKSPACE/kernel_workspace/android_kernel_xiaomi_sm8350/kernel/cgroup/cgroup.c ]; then
+            sh $GITHUB_WORKSPACE/kernel_workspace/android_kernel_xiaomi_sm8350/utils/runcpatch.sh $GITHUB_WORKSPACE/kernel_workspace/android_kernel_xiaomi_sm8350/kernel/cgroup/cgroup.c
+        fi
+        if [ -f $GITHUB_WORKSPACE/kernel_workspace/android_kernel_xiaomi_sm8350/kernel/cgroup.c ]; then
+            sh $GITHUB_WORKSPACE/kernel_workspace/android_kernel_xiaomi_sm8350/utils/runcpatch.sh $GITHUB_WORKSPACE/kernel_workspace/android_kernel_xiaomi_sm8350/kernel/cgroup.c
+        fi
+        if [ -f $GITHUB_WORKSPACE/kernel_workspace/android_kernel_xiaomi_sm8350/net/netfilter/xt_qtaguid.c ]; then
+             patch -p0 < $GITHUB_WORKSPACE/kernel_workspace/android_kernel_xiaomi_sm8350/utils/xt_qtaguid.patch
+        fi
         cp -pf $GITHUB_WORKSPACE/lindroid_GKI.config arch/arm64/configs/vendor/lindroid_GKI.config
         cp -pf $GITHUB_WORKSPACE/lmo.sh build.sh
         chmod +x build.sh
