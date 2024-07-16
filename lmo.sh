@@ -61,7 +61,7 @@ mkdir -p out
 make $MAKE_PARAMS $DEFCONFIG
 
 echo -e "\nStarting compilation...\n"
-make -j$(nproc --all) $MAKE_PARAMS Image || exit $?
+make -j$(nproc --all) $MAKE_PARAMS || exit $?
 make -j$(nproc --all) $MAKE_PARAMS INSTALL_MOD_PATH=modules INSTALL_MOD_STRIP=1 modules_install
 
 kernel="out/arch/arm64/boot/Image"
