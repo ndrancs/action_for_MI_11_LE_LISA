@@ -40,7 +40,7 @@ jobs:
         cd $GITHUB_WORKSPACE/kernel_workspace/android_kernel_xiaomi_sm8350
         mkdir utils
         cp -pf $GITHUB_WORKSPACE/utils/* ./utils/
-        echo 'source "utils/Kconfig"' >> "Kconfig"
+        #echo 'source "utils/Kconfig"' >> "Kconfig"
         chmod +x $GITHUB_WORKSPACE/kernel_workspace/android_kernel_xiaomi_sm8350/utils/runcpatch.sh
         if [ -f $GITHUB_WORKSPACE/kernel_workspace/android_kernel_xiaomi_sm8350/kernel/cgroup/cgroup.c ]; then
             sh $GITHUB_WORKSPACE/kernel_workspace/android_kernel_xiaomi_sm8350/utils/runcpatch.sh $GITHUB_WORKSPACE/kernel_workspace/android_kernel_xiaomi_sm8350/kernel/cgroup/cgroup.c
